@@ -4,6 +4,7 @@ import {ParkSpace} from "../models/ParkSpace.js";
 import Booking from "../models/Booking.js";
 import {v4 as uuidv4} from 'uuid';
 import authVerify from "../middleWare/AuthVerify.js";
+import {BOOKING_STATUS} from "../utils/BookingStatus.js";
 
 const bookingRouter = express.Router();
 
@@ -23,7 +24,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
             booking_date: Date.now(),
             booking_ref_number: uuidv4(),
             price: req.body.price,
-            booking_status: "Pending",
+            booking_status: BOOKING_STATUS.PENDING,
             paid: true
         });
         await booking.save();
@@ -36,7 +37,6 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         await user.save()
 
         res.status(200).send("Booking successful")
-        console.log("working")
     } catch (error) {
         res.status(500).send(error);
     }
