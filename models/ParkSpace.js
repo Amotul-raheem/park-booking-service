@@ -10,10 +10,6 @@ const parkSpaceSchema = new Schema({
     space_name: {
         type: String,
         required: true
-    },
-    space_available: {
-        type: Boolean,
-        required: true
     }
 })
 

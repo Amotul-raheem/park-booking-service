@@ -41,6 +41,22 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         res.status(500).send(error);
     }
 })
+bookingRouter.post("/isSpotAvailable", async (req, res) => {
+    let unavailableSpot = []
+    const parkSpaces = await ParkSpace.find({
+            booking_status: BOOKING_STATUS.PENDING,
+        },
+        {
+            check_in: {$gt: new Date(req.body.check_in), $lt: new Date(req.body.check_out)},
+            check_out: {$gt: new Date(req.body.check_in), $lt: new Date(req.body.check_out)}
+        });
+    console.log(parkSpaces)
+    unavailableSpot.push(parkSpaces)
+    for (let i = 0; i < unavailableSpot.length; i++) {
+        console.log(unavailableSpot[i]._id);
+
+    }
+})
 
 export {bookingRouter}
 
