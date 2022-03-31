@@ -1,0 +1,5 @@
+export const BOOKING_STATUS = {
+    PENDING: "PENDING",
+    FULFILLED: "FULFILLED",
+    CANCELLED: "CANCELLED"
+}
