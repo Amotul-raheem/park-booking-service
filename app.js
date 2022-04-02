@@ -4,6 +4,7 @@ import {mongodbConnection} from "./db.js";
 import dotenv from "dotenv";
 import cors from "cors"
 import {bookingRouter} from "./routes/BookingRouter.js";
+import spotsAvailableRouter from "./routes/SpotsAvailable.js";
 
 dotenv.config()
 
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
 const PORT = process.env.PORT
 
 app.use("/api", bookingRouter);
+app.use("/api", spotsAvailableRouter);
 
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
