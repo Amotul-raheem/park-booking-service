@@ -23,11 +23,12 @@ totalSpotsRouter.post("/isSpotAvailable", async (req, res) => {
             let isCheckOutInRange = reqCheckOut.isBetween(checkIn, checkOut)
 
             if (isCheckInInRange && isCheckOutInRange === true) {
-                const parkSpace = await ParkSpace.find({_id: {$in: space_id}});
-                accum.push(parkSpace)
+                accum.push(booking.space_id)
             }
         },
         [])
+
+    let unavailableParkSpaces = await ParkSpace.find({_id: {$in: unavailableSpots}}, {space_name: 1, _id: false});
 
     // for (let i = 0; i < pendingAndInuseBookings.length; i++) {
     //     let x = (pendingAndInuseBookings[i].space_id);
