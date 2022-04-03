@@ -4,7 +4,7 @@ import {mongodbConnection} from "./db.js";
 import dotenv from "dotenv";
 import cors from "cors"
 import {bookingRouter} from "./routes/BookingRouter.js";
-import totalSpotsRouter from "./routes/SpotsAvailable.js";
+import totalSpotsRouter from "./routes/SpotsRouter.js";
 
 dotenv.config()
 
