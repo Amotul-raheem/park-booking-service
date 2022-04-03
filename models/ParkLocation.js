@@ -18,9 +18,11 @@ const parkLocationSchema = new Schema({
     state: {
         type: String
     },
-    park_spaces :[
-        {  type: mongoose.Schema.Types.ObjectId,
-            ref: 'ParkSpace'}
+    park_spaces: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'ParkSpace'
+        }
     ],
     country: {
         type: String,

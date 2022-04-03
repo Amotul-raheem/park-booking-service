@@ -10,7 +10,6 @@ const parkSpaceSchema = new Schema({
     space_name: {
         type: String,
         required: true
-    }
 })
 
 export const ParkSpace = mongoose.model('parkSpace', parkSpaceSchema);

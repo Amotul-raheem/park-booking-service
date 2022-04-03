@@ -30,7 +30,7 @@ const bookingSchema = new Schema({
         type: String
     },
     price: {
-       type: Number
+        type: Number
     },
     paid: {
         type: Boolean,
