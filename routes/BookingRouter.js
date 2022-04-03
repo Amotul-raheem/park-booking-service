@@ -16,6 +16,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         if (!parkSpace) {
             res.status(400).send("Invalid booking");
         }
+
         const booking = new Booking({
             space_id: parkSpace._id,
             user_id: user._id,

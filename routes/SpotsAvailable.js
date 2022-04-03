@@ -1,36 +1,50 @@
+import express from "express";
+import moment from "moment";
 import {ParkSpace} from "../models/ParkSpace.js";
 import {BOOKING_STATUS} from "../utils/BookingStatus.js";
-import express from "express";
+
 import Booking from "../models/Booking.js";
 import getDates from "../utils/GetDates.js";
 
-const spotsAvailableRouter = express.Router();
+const totalSpotsRouter = express.Router();
 
-spotsAvailableRouter.post("/isSpotAvailable", async (req, res) => {
-    let unavailableSpots = []
-    const pendingBookings = await Booking.find({booking_status: BOOKING_STATUS.PENDING})
-    var dt = new Date("30 July 2010 15:05 UTC");
-    document.write(dt.toISOString());
+totalSpotsRouter.post("/isSpotAvailable", async (req, res) => {
+    const reqCheckIn = moment(req.body.check_in).format()
+    const reqCheckOut = moment(req.body.check_out).format()
 
-    const checkIn = req.body.check_in
-    const checkOut = req.body.check_out
+    let totalSpots = {}
 
-    for (let i = 0; i < pendingBookings.length; i++) {
-        let x = (pendingBookings[i].space_id);
-        let y = (pendingBookings[i].check_in);
-        let z = (pendingBookings[i].check_out);
+    const pendingAndInuseBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.INUSE}]})
 
-        const dates = getDates(new Date(y), new Date(z))
-        dates.forEach(function (date) {
-            // console.log(date)
-            if (date === checkOut || date === checkIn) {
-                unavailableSpots.push(x)
-            }else{
-                console.log("ok")
+    let unavailableSpots = pendingAndInuseBookings.reduce(async (accum, booking) => {
+            let checkIn = moment(booking.check_in).format()
+            let checkOut = moment(booking.check_out).format()
+            let isCheckInInRange = reqCheckIn.isBetween(checkIn, checkOut)
+            let isCheckOutInRange = reqCheckOut.isBetween(checkIn, checkOut)
+
+            if (isCheckInInRange && isCheckOutInRange === true) {
+                const parkSpace = await ParkSpace.find({_id: {$in: space_id}});
+                accum.push(parkSpace)
             }
-        })
-    }
-    console.log(unavailableSpots)
+        },
+        [])
+
+    // for (let i = 0; i < pendingAndInuseBookings.length; i++) {
+    //     let x = (pendingAndInuseBookings[i].space_id);
+    //     let y = (pendingAndInuseBookings[i].check_in);
+    //     let z = (pendingAndInuseBookings[i].check_out);
+    //
+    //     const dates = getDates(new Date(y), new Date(z))
+    //     dates.forEach(function (date) {
+    //         // console.log(date)
+    //         if (date === checkOut || date === checkIn) {
+    //             unavailableSpots.push(x)
+    //         } else {
+    //             console.log("ok")
+    //         }
+    //     })
+    // }
+    // console.log(unavailableSpots)
     res.send("working")
 
 
@@ -43,4 +57,4 @@ spotsAvailableRouter.post("/isSpotAvailable", async (req, res) => {
 //     console.log(date)
 // })
 
-export default spotsAvailableRouter
+export default totalSpotsRouter
