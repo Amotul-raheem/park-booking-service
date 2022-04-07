@@ -45,7 +45,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
 
 bookingRouter.post("/cancel-booking", authVerify, async (req, res) => {
     try {
-        const cancelledBooking = await Booking.findOne({booking_ref_number: req.body.booking_ref_number});
+        const cancelledBooking = await Booking.findOne({_id: req.body._id});
 
         cancelledBooking.booking_status = BOOKING_STATUS.CANCELLED
         await cancelledBooking.save()
