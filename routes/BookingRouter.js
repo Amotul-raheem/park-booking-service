@@ -43,6 +43,55 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
     }
 })
 
+bookingRouter.post("/cancel-booking", authVerify, async (req, res) => {
+    try {
+        const cancelledBooking = await Booking.findOne({_id: req.body._id});
 
+        cancelledBooking.booking_status = BOOKING_STATUS.CANCELLED
+        await cancelledBooking.save()
+        res.status(200).send("Booking cancelled successfully")
+
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
+
+bookingRouter.post("/user-bookings", authVerify, async (req, res) => {
+    try {
+        const userBookings = await Booking.find({user_id: req.body.user_id});
+
+        let pendingBookings = userBookings.map(booking => {
+            if (booking.booking_status === BOOKING_STATUS.PENDING) {
+                return booking
+            }
+        })
+        let activeBookings = userBookings.map(booking => {
+            if (booking.booking_status === BOOKING_STATUS.ACTIVE) {
+                return booking
+            }
+        })
+        let cancelledBookings = userBookings.map(booking => {
+            if (booking.booking_status === BOOKING_STATUS.CANCELLED) {
+                return booking
+            }
+        })
+        let fulfilledBookings = userBookings.map(booking => {
+            if (booking.booking_status === BOOKING_STATUS.FULFILLED) {
+                return booking
+            }
+        })
+
+        let totalUserBookings = {}
+
+        totalUserBookings.pending = pendingBookings
+        totalUserBookings.active = activeBookings
+        totalUserBookings.cancelled = cancelledBookings
+        totalUserBookings.fulfilled = fulfilledBookings
+
+        res.status(200).json({totalUserBookings: totalUserBookings})
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
 export {bookingRouter}
 

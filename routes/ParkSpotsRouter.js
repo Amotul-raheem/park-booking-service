@@ -13,7 +13,7 @@ parkSpotsRouter.post("/getParkSpots", async (req, res) => {
 
         let parkSpots = {}
 
-        const pendingAndInuseBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.IN_USE}]})
+        const pendingAndInuseBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.ACTIVE}]})
 
         let unavailableSpotIds = pendingAndInuseBookings.reduce((accum, booking) => {
                 let checkIn = moment(booking.check_in).format()
