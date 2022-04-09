@@ -60,35 +60,19 @@ bookingRouter.post("/user-bookings", authVerify, async (req, res) => {
     try {
         const userBookings = await Booking.find({user_id: req.body.user_id});
 
-        let pendingBookings = userBookings.map(booking => {
-            if (booking.booking_status === BOOKING_STATUS.PENDING) {
-                return booking
-            }
-        })
-        let activeBookings = userBookings.map(booking => {
-            if (booking.booking_status === BOOKING_STATUS.ACTIVE) {
-                return booking
-            }
-        })
-        let cancelledBookings = userBookings.map(booking => {
-            if (booking.booking_status === BOOKING_STATUS.CANCELLED) {
-                return booking
-            }
-        })
-        let fulfilledBookings = userBookings.map(booking => {
-            if (booking.booking_status === BOOKING_STATUS.FULFILLED) {
-                return booking
-            }
-        })
+        let pendingBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.PENDING);
+        let activeBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.ACTIVE);
+        let cancelledBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.CANCELLED);
+        let fulfilledBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.FULFILLED);
 
-        let totalUserBookings = {}
+        let allUserBookings = {}
 
-        totalUserBookings.pending = pendingBookings
-        totalUserBookings.active = activeBookings
-        totalUserBookings.cancelled = cancelledBookings
-        totalUserBookings.fulfilled = fulfilledBookings
+        allUserBookings.pending = pendingBookings
+        allUserBookings.active = activeBookings
+        allUserBookings.cancelled = cancelledBookings
+        allUserBookings.fulfilled = fulfilledBookings
 
-        res.status(200).json({totalUserBookings: totalUserBookings})
+        res.status(200).json({allUserBookings})
     } catch (error) {
         res.status(500).send(error);
     }
