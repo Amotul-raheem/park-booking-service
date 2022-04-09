@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import {ParkSpace} from "../models/ParkSpace.js";
 import Booking from "../models/Booking.js";
 import {v4 as uuidv4} from 'uuid';
-import authVerify from "../middleWare/AuthVerify.js";
+import authVerify from "../middleware/AuthVerify.js";
 import {BOOKING_STATUS} from "../utils/BookingStatus.js";
 
 const bookingRouter = express.Router();
