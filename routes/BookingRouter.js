@@ -72,7 +72,7 @@ bookingRouter.post("/user-bookings", authVerify, async (req, res) => {
         allUserBookings.cancelled = cancelledBookings
         allUserBookings.fulfilled = fulfilledBookings
 
-        res.status(200).json({allUserBookings})
+        res.status(200).json(allUserBookings)
     } catch (error) {
         res.status(500).send(error);
     }
