@@ -43,7 +43,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
     }
 })
 
-bookingRouter.post("/cancel-booking", authVerify, async (req, res) => {
+bookingRouter.post("/cancel-booking", async (req, res) => {
     try {
         const cancelledBooking = await Booking.findOne({_id: req.body._id});
 
@@ -73,18 +73,6 @@ bookingRouter.post("/user-bookings", authVerify, async (req, res) => {
         allUserBookings.fulfilled = fulfilledBookings
 
         res.status(200).json(allUserBookings)
-    } catch (error) {
-        res.status(500).send(error);
-    }
-})
-bookingRouter.post("/cancel-booking", authVerify, async (req, res) => {
-    try {
-        const cancelledBooking = await Booking.findOne({_id: req.body._id});
-
-        cancelledBooking.booking_status = BOOKING_STATUS.CANCELLED
-        await cancelledBooking.save()
-        res.status(200).send("Booking cancelled successfully")
-
     } catch (error) {
         res.status(500).send(error);
     }
