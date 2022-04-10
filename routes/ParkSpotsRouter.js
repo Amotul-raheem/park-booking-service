@@ -6,16 +6,16 @@ import Booking from "../models/Booking.js";
 
 const parkSpotsRouter = express.Router();
 
-parkSpotsRouter.post("/getParkSpots", async (req, res) => {
+parkSpotsRouter.post("/get-park-spots", async (req, res) => {
     try {
         const reqCheckIn = moment(req.body.check_in).format()
         const reqCheckOut = moment(req.body.check_out).format()
 
         let parkSpots = {}
 
-        const pendingAndInuseBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.ACTIVE}]})
+        const pendingAndActiveBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.IN_USE}]})
 
-        let unavailableSpotIds = pendingAndInuseBookings.reduce((accum, booking) => {
+        let unavailableSpotIds = pendingAndActiveBookings.reduce((accum, booking) => {
                 let checkIn = moment(booking.check_in).format()
                 let checkOut = moment(booking.check_out).format()
                 let isCheckInInRange = isDateBetween(reqCheckIn, checkIn, checkOut)
