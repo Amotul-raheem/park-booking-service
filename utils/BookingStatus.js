@@ -2,5 +2,5 @@ export const BOOKING_STATUS = {
     PENDING: "PENDING",
     FULFILLED: "FULFILLED",
     CANCELLED: "CANCELLED",
-    IN_USE: "IN_USE"
+    ACTIVE: "ACTIVE"
 }

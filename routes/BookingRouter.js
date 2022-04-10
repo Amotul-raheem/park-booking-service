@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import {ParkSpace} from "../models/ParkSpace.js";
 import Booking from "../models/Booking.js";
 import {v4 as uuidv4} from 'uuid';
-import authVerify from "../middleWare/AuthVerify.js";
+import authVerify from "../middleware/AuthVerify.js";
 import {BOOKING_STATUS} from "../utils/BookingStatus.js";
 
 const bookingRouter = express.Router();
@@ -43,7 +43,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
     }
 })
 
-bookingRouter.post("/cancel-booking", authVerify, async (req, res) => {
+bookingRouter.post("/cancel-booking", async (req, res) => {
     try {
         const cancelledBooking = await Booking.findOne({_id: req.body._id});
 
@@ -51,6 +51,28 @@ bookingRouter.post("/cancel-booking", authVerify, async (req, res) => {
         await cancelledBooking.save()
         res.status(200).send("Booking cancelled successfully")
 
+    } catch (error) {
+        res.status(500).send(error);
+    }
+})
+
+bookingRouter.post("/user-bookings", authVerify, async (req, res) => {
+    try {
+        const userBookings = await Booking.find({user_id: req.body.user_id});
+
+        let pendingBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.PENDING);
+        let activeBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.ACTIVE);
+        let cancelledBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.CANCELLED);
+        let fulfilledBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.FULFILLED);
+
+        let allUserBookings = {}
+
+        allUserBookings.pending = pendingBookings
+        allUserBookings.active = activeBookings
+        allUserBookings.cancelled = cancelledBookings
+        allUserBookings.fulfilled = fulfilledBookings
+
+        res.status(200).json(allUserBookings)
     } catch (error) {
         res.status(500).send(error);
     }
