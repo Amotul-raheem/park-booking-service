@@ -34,7 +34,7 @@ parkSpotsRouter.post("/get-park-spots", async (req, res) => {
         parkSpots.unavailable = unavailableParkSpaces
         parkSpots.available = availableParkSpaces
 
-        res.status(200).json({ parkSpots: parkSpots })
+        res.status(200).json( parkSpots )
 
     } catch (error) {
         res.status(500).send(error);
