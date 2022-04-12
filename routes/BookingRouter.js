@@ -1,13 +1,15 @@
 import express from "express"
+import dotenv from "dotenv";
 import User from "../models/User.js";
 import {ParkSpace} from "../models/ParkSpace.js";
 import Booking from "../models/Booking.js";
 import {v4 as uuidv4} from 'uuid';
 import authVerify from "../middleware/AuthVerify.js";
 import {BOOKING_STATUS} from "../utils/BookingStatus.js";
+import sendEmail from "../client/BookingNotificationClient.js";
 
 const bookingRouter = express.Router();
-
+dotenv.config()
 
 bookingRouter.post("/booking", authVerify, async (req, res) => {
     try {
@@ -36,6 +38,13 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         user.expiry_year = req.body.expiry_year
         user.security_code = req.body.security_code
         await user.save()
+
+        const BOOKING_NOTIFICATION_ENDPOINT = process.env.BOOKING_NOTIFICATION_ENDPOINT
+        const username = user.username
+        const email = user.email
+
+        await sendEmail(username, email, req.body.space_name, req.body.check_in, req.body.check_out, BOOKING_NOTIFICATION_ENDPOINT)
+        console.log("Booking successful email sent to" + username)
 
         res.status(200).send("Booking successful")
     } catch (error) {
