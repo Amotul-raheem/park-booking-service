@@ -39,7 +39,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         user.security_code = req.body.security_code
         await user.save()
 
-        const  BOOKING_NOTIFICATION_ENDPOINT = process.env.BOOKING_NOTIFICATION_ENDPOINT
+        const BOOKING_NOTIFICATION_ENDPOINT = process.env.BOOKING_NOTIFICATION_ENDPOINT
         const username = user.username
         const email = user.email
 
