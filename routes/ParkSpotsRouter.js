@@ -18,10 +18,12 @@ parkSpotsRouter.post("/get-park-spots", async (req, res) => {
         let unavailableSpotIds = pendingAndActiveBookings.reduce((accum, booking) => {
             let checkIn = moment(booking.check_in).format()
             let checkOut = moment(booking.check_out).format()
-            let isCheckInInRange = isDateBetween(reqCheckIn, checkIn, checkOut)
-            let isCheckOutInRange = isDateBetween(reqCheckOut, checkIn, checkOut)
+            let isReqCheckInInRange = isDateBetween(reqCheckIn, checkIn, checkOut)
+            let isReqCheckOutInRange = isDateBetween(reqCheckOut, checkIn, checkOut)
+            let isCheckInInRange = isDateBetween(checkIn, reqCheckIn, reqCheckOut)
+            let isCheckOutInRange = isDateBetween(checkOut, reqCheckIn, reqCheckOut)
 
-            if (isCheckInInRange || isCheckOutInRange === true) {
+            if (isReqCheckInInRange || isReqCheckOutInRange || isCheckInInRange || isCheckOutInRange) {
                 accum.push(booking.space_id)
             }
             return accum
