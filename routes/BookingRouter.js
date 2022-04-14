@@ -8,6 +8,7 @@ import authVerify from "../middleware/AuthVerify.js";
 import {BOOKING_STATUS} from "../utils/BookingStatus.js";
 import sendEmail from "../client/BookingNotificationClient.js";
 import moment from "moment";
+import {dateFormat} from "../utils/DateUtils.js";
 
 const bookingRouter = express.Router();
 dotenv.config()
@@ -43,7 +44,7 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         const BOOKING_NOTIFICATION_ENDPOINT = process.env.BOOKING_NOTIFICATION_ENDPOINT
         const username = user.username
         const email = user.email
-        const dateFormat = "dddd, MMMM Do YYYY, h:mm:ss a"
+
         const check_in =  moment(req.body.check_in).format(dateFormat)
         const check_out =  moment(req.body.check_out).format(dateFormat)
         await sendEmail(username, email, req.body.space_name, check_in, check_out, BOOKING_NOTIFICATION_ENDPOINT)
