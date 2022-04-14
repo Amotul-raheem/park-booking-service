@@ -9,7 +9,6 @@ const authVerify = function (req, res, next) {
 
     try {
         req.userId = jwt.verify(token, process.env.TOKEN_STRING);
-        console.log("Booking verified")
         next();
     } catch (error) {
         res.status(400).send("Invalid token")

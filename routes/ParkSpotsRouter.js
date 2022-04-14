@@ -28,7 +28,6 @@ parkSpotsRouter.post("/get-park-spots", async (req, res) => {
             }
             return accum
         }, [])
-
         let unavailableParkSpaces = await ParkSpace.find({_id: {$in: unavailableSpotIds}}, {space_name: 1});
         let availableParkSpaces = await ParkSpace.find({_id: {$nin: unavailableSpotIds}}, {space_name: 1});
 
