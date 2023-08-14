@@ -4,9 +4,9 @@ import dotenv from "dotenv";
 dotenv.config()
 
 
-const mongodbConnection = ( () => {
+const mongodbConnection = (() => {
     try {
-        mongoose.connect(process.env.MONGODB_URL,() => console.log("connected to database successfully"));
+        mongoose.connect(process.env.MONGODB_URL, () => console.log("MongoDB connection successful"));
     } catch (error) {
         console.log(error.message)
     }
