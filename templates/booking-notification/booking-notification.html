@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Park</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,600;1,400&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Asap', sans-serif;
+            overflow-x: hidden;
+            background-color: #E5E5E5;
+        }
+
+        .booking-notification {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .booking-notification-container {
+            width: 500px;
+            height: 350px;
+            background: #FFFFFF;
+            border-radius: 29px;
+            padding: 20px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .text{
+            margin: 0;
+        }
+        .user-text{
+            margin-bottom: 15px;
+        }
+        .booking-notification-message {
+            padding: 30px;
+            font-size: 22px;
+            line-height: 35px;
+            color: #576072;
+            margin: 0;
+        }
+
+        .colored-text {
+            color: #4A2CFC;
+        }
+    </style>
+</head>
+<body>
+<div class="booking-notification">
+    <div class="booking-notification-container">
+        <div class="booking-notification-message">
+            <p class="text user-text">
+                Hello,
+                <span class="colored-text">{{username}}</span>.
+            </p>
+            <p class="text">You've successfully booked space
+                <span class="colored-text">{{space_name}} </span>
+                for the day <span class="colored-text">{{checkIn}}</span> to
+                <span class="colored-text">{{checkOut}}</span>.
+            </p>
+            <p class="text">A notification email will be sent to you a day before your booking. Thanks for choosing us. Stay
+                safe. </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
