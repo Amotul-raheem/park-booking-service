@@ -1,28 +1,30 @@
 import express from "express"
 import dotenv from "dotenv";
-import User from "../models/User.js";
-import {ParkSpace} from "../models/ParkSpace.js";
-import Booking from "../models/Booking.js";
 import {v4 as uuidv4} from 'uuid';
-import authVerify from "../middleware/AuthVerify.js";
-import {BOOKING_STATUS} from "../utils/BookingStatus.js";
-import sendEmail from "../client/BookingNotificationClient.js";
 import moment from "moment";
-import {DATE_FORMAT} from "../utils/DateUtils.js";
+import {sendBookingNotificationEmail} from "../../service/EmailNotificationService.js";
+import Booking from "../../models/Booking.js";
+import {ParkSpace} from "../../models/ParkSpace.js";
+import User from "../../models/User.js";
+import {BOOKING_STATUS} from "../../enums/BookingStatus.js";
+import {DATE_FORMAT} from "../../utils/DateUtils.js";
+import authVerify from "../../middleware/AuthVerify.js";
 
 const bookingRouter = express.Router();
 dotenv.config()
 
 bookingRouter.post("/booking", authVerify, async (req, res) => {
     try {
+        const parkSpaceName = req.body.space_name;
         const user = await User.findOne({_id: req.userId});
-        const parkSpace = await ParkSpace.findOne({space_name: req.body.space_name});
+        const parkSpace = await ParkSpace.findOne({space_name: parkSpaceName});
         if (!parkSpace) {
             res.status(400).send("Invalid booking");
         }
 
         const booking = new Booking({
             space_id: parkSpace._id,
+            space_name: parkSpaceName,
             user_id: user._id,
             check_in: req.body.check_in,
             check_out: req.body.check_out,
@@ -41,17 +43,18 @@ bookingRouter.post("/booking", authVerify, async (req, res) => {
         user.security_code = req.body.security_code
         await user.save()
 
-        const BOOKING_NOTIFICATION_ENDPOINT = process.env.BOOKING_NOTIFICATION_ENDPOINT
         const username = user.username
         const email = user.email
 
-        const check_in =  moment(req.body.check_in).format(DATE_FORMAT)
-        const check_out =  moment(req.body.check_out).format(DATE_FORMAT)
-        await sendEmail(username, email, req.body.space_name, check_in, check_out, BOOKING_NOTIFICATION_ENDPOINT)
-        console.log("Booking successful email sent to " + username)
+        const checkInTime = moment(req.body.check_in).format(DATE_FORMAT)
+        const checkOutTime = moment(req.body.check_out).format(DATE_FORMAT)
+        sendBookingNotificationEmail({
+            username, checkInTime, checkOutTime, parkSpaceName, email
+        })
 
         res.status(200).send("Booking successful")
     } catch (error) {
+        console.log("Booking failed")
         res.status(500).send(error);
     }
 })
@@ -69,9 +72,9 @@ bookingRouter.post("/cancel-booking", async (req, res) => {
     }
 })
 
-bookingRouter.post("/user-bookings", authVerify, async (req, res) => {
+bookingRouter.post("/get-user-bookings", authVerify, async (req, res) => {
     try {
-        const userBookings = await Booking.find({user_id: req.body.user_id});
+        const userBookings = await Booking.find({user_id: req.userId});
 
         let pendingBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.PENDING);
         let activeBookings = userBookings.filter(booking => booking.booking_status === BOOKING_STATUS.ACTIVE);

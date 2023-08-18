@@ -1,8 +1,8 @@
 import express from "express";
 import moment from "moment";
-import {ParkSpace} from "../models/ParkSpace.js";
-import {BOOKING_STATUS} from "../utils/BookingStatus.js";
-import Booking from "../models/Booking.js";
+import {BOOKING_STATUS} from "../../enums/BookingStatus.js";
+import Booking from "../../models/Booking.js";
+import {ParkSpace} from "../../models/ParkSpace.js";
 
 const parkSpotsRouter = express.Router();
 
@@ -13,7 +13,7 @@ parkSpotsRouter.post("/get-park-spots", async (req, res) => {
 
         let parkSpots = {}
 
-        const pendingAndActiveBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.IN_USE}]})
+        const pendingAndActiveBookings = await Booking.find({$or: [{booking_status: BOOKING_STATUS.PENDING}, {booking_status: BOOKING_STATUS.ACTIVE}]})
 
         let unavailableSpotIds = pendingAndActiveBookings.reduce((accum, booking) => {
             let checkIn = moment(booking.check_in).format()
